@@ -11,11 +11,16 @@ datagroup: ecommerce_etl {
   max_cache_age: "24 hours"
 }
 
+
 persist_with: ecommerce_etl
 ############ Base Explores #############
 
 
 explore: order_items {
+  access_filter: {
+    field: users.country
+    user_attribute: country
+  }
   label: "(1) Orders, Items and Users"
   view_name: order_items
 
