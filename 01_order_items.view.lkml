@@ -2,6 +2,51 @@ view: order_items {
   sql_table_name: order_items ;;
   ########## IDs, Foreign Keys, Counts ###########
 
+  dimension: date_start_this_period {
+    type: date_raw
+    sql: {% date_start previous_period_filter %} ;;
+  }
+
+  dimension: date_end_this_period {
+    type: date_raw
+    sql: {% date_end previous_period_filter %} ;;
+  }
+
+  dimension: days_in_period {
+    hidden: yes
+    type: duration_day
+    sql_start: ${date_start_this_period} ;;
+    sql_end: ${date_end_this_period} ;;
+  }
+
+  dimension: day_in_period {
+    type: duration_day
+    view_label: "Previous Period Example"
+    sql_start: CASE WHEN ${created_date::datetime} >= ${date_start_this_period}
+                        THEN ${date_start_this_period}
+                      WHEN ${created_date::datetime} >= ${date_start_previous_period}
+                        THEN ${date_start_previous_period} END ;;
+    sql_end: ${created_date::datetime} ;;
+  }
+
+  dimension: date_start_previous_period {
+    type: date_raw
+    sql: DATEADD(day,-1*${days_in_period},${date_start_this_period}) ;;
+  }
+
+  dimension: date_end_previous_period {
+    type: date_raw
+    sql: DATEADD(day,-1*${days_in_period},${date_end_this_period}) ;;
+  }
+
+  filter: previous_period_filter {
+    view_label: "Previous Period Example"
+    type: date
+    description: "Use this filter for period analysis"
+    sql:    ${created_date::datetime} >= ${date_start_previous_period}
+      AND ${created_date::datetime} < ${date_end_this_period} ;;
+  }
+
   dimension: id {
     primary_key: yes
     type: number
