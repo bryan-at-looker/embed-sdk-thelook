@@ -47,6 +47,39 @@ view: order_items {
       AND ${created_date::datetime} < ${date_end_this_period} ;;
   }
 
+  dimension: previous_period {
+    view_label: "Previous Period Example"
+    type: string
+    description: "The reporting period as selected by the Previous Period Filter"
+    sql:
+      CASE
+        WHEN {% date_start previous_period_filter %} is not null AND {% date_end previous_period_filter %} is not null /* date ranges or in the past x days */
+          THEN
+            CASE
+              WHEN ${created_date::datetime} >=  ${date_start_this_period}
+                AND ${created_date::datetime} < ${date_end_this_period}
+                THEN 'This Period'
+              WHEN ${created_date::datetime} >= ${date_start_previous_period}
+                AND ${created_date::datetime} <  ${date_end_previous_period}
+                THEN 'Previous Period'
+            END
+        WHEN {% date_start previous_period_filter %} is null AND {% date_end previous_period_filter %} is null /* has any value or is not null */
+          THEN CASE WHEN ${created_date::datetime} is not null THEN 'Has Value' ELSE 'Is Null' END
+        WHEN {% date_start previous_period_filter %} is null AND {% date_end previous_period_filter %} is not null /* on or before */
+          THEN
+            CASE
+              WHEN  ${created_date::datetime} <=  {% date_end previous_period_filter %} THEN 'In Period'
+              WHEN  ${created_date::datetime} >   {% date_end previous_period_filter %} THEN 'Not In Period'
+            END
+       WHEN {% date_start previous_period_filter %} is not null AND {% date_end previous_period_filter %} is null /* on or after */
+         THEN
+           CASE
+             WHEN  ${created_date::datetime} >= {% date_start previous_period_filter %} THEN 'In Period'
+             WHEN  ${created_date::datetime} < {% date_start previous_period_filter %} THEN 'Not In Period'
+          END
+      END ;;
+  }
+
   dimension: id {
     primary_key: yes
     type: number
