@@ -97,7 +97,7 @@
     width: 5
     height: 6
   - title: Products Count
-    name: Products Count
+    name: Products Count Table
     model: thelook
     explore: order_items
     type: looker_grid
@@ -185,7 +185,7 @@
     width: 5
     height: 6
   - title: Active Users
-    name: Active Users
+    name: Active Users Column
     model: thelook
     explore: order_items
     type: looker_column
@@ -258,7 +258,7 @@
     width: 13
     height: 6
   - title: Active Users
-    name: Active Users
+    name: Active Users Donut
     model: thelook
     explore: order_items
     type: looker_donut_multiples
@@ -332,7 +332,7 @@
     width: 6
     height: 6
   - title: Total Sale Price
-    name: Total Sale Price
+    name: Total Sale Price Line
     model: thelook
     explore: order_items
     type: looker_line
@@ -419,7 +419,7 @@
     width: 19
     height: 6
   - title: Total Gross Margin
-    name: Total Gross Margin
+    name: Total Gross Margin Column
     model: thelook
     explore: order_items
     type: looker_column
